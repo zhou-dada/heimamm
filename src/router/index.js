@@ -1,12 +1,27 @@
-import VueRouter from   'vue-router'
+// 导入Vue
 import Vue from 'vue'
-import son from '../components/son'
+
+// 导入路由
+import VueRouter from 'vue-router'
+
+// 注册路由
 Vue.use(VueRouter)
-const router =new VueRouter({
-    routes:[{
-        path:'/',
-        component:son
-    }]
+
+// 准备组件
+import login from '../views/login/login.vue'
+
+// 这只路由规则
+const routes = [
+    {
+      path: '/login',
+      component: login
+    }
+]
+
+// 创建路由对象
+const router = new VueRouter({
+    routes
 })
 
+// 暴露出去
 export default router
