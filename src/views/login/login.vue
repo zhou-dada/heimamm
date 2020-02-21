@@ -43,7 +43,8 @@
         </el-form-item>
         <el-form-item prop="agree">
           <div class="agree">
-            <el-checkbox v-model="form.agree"></el-checkbox>我已阅读并同意
+            <el-checkbox v-model="form.agree"></el-checkbox>
+            我已阅读并同意
             <el-link type="primary" class="agreeson" :underline="false">用户协议</el-link>
             <span>和</span>
             <el-link type="primary" class="agreeson" :underline="false">隐私条款</el-link>
