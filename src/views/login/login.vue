@@ -1,5 +1,6 @@
 <template>
   <div class="login-wrap">
+    <!--左边的盒子-->
     <div class="login-box">
       <div class="title-box">
         <img class="logo" src="./images/title-logo.png" alt />
@@ -7,7 +8,7 @@
         <span class="line"></span>
         <span class="right-title">用户登录</span>
       </div>
-
+      <!--表单验证-->
       <el-form class="demo-ruleForm" :rules="rules" :model="form" label-width="43px" ref="ruleForm">
         <el-form-item prop="user">
           <el-input
@@ -43,8 +44,7 @@
         </el-form-item>
         <el-form-item prop="agree">
           <div class="agree">
-            <el-checkbox v-model="form.agree"></el-checkbox>
-            我已阅读并同意
+            <el-checkbox v-model="form.agree"></el-checkbox>我已阅读并同意
             <el-link type="primary" class="agreeson" :underline="false">用户协议</el-link>
             <span>和</span>
             <el-link type="primary" class="agreeson" :underline="false">隐私条款</el-link>
@@ -54,17 +54,23 @@
           <el-button class="btnwidth" @click="loginBtn" type="primary">登录</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button class="btnwidth" type="primary">注册</el-button>
+          <el-button class="btnwidth" type="primary" @click="search">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
-
+    <!--右边的图片-->
     <img src="./images/login_banner_ele.png" alt />
+    <!--弹出对话框-->
+    <regest ref="regestVisible"></regest>
   </div>
 </template>
 
 <script>
+import regest from "./components/regest";
 export default {
+  components: {
+    regest
+  },
   data() {
     return {
       form: {
@@ -91,8 +97,12 @@ export default {
 
           // 只有值为true才满足条件，否则代表不匹配
           // { required: true, message: "必须勾选同意用户协议", trigger: "blur" },
-          { pattern:/true/,message:'必须勾选同意用户协议',trigger:'change'}
-          ]
+          {
+            pattern: /true/,
+            message: "必须勾选同意用户协议",
+            trigger: "change"
+          }
+        ]
       }
     };
   },
@@ -107,6 +117,13 @@ export default {
           return false;
         }
       });
+    },
+    search() {
+      this.$refs.regestVisible.dialogFormVisible = true;
+      // 点击注册时表单数据清空
+      this.$nextTick(()=>{
+        this.$refs.regestVisible.newForm();
+      })
     }
   }
 };

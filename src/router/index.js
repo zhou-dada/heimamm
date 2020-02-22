@@ -13,7 +13,7 @@ import login from '../views/login/login.vue'
 // 这只路由规则
 const routes = [
     {
-      path: '/login',
+      path: '/',
       component: login
     }
 ]
