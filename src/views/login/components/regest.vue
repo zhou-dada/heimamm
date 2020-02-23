@@ -226,6 +226,8 @@ export default {
       this.$refs.ruleForm.resetFields();
       // 而img不是表单元素  所以只要img绑定的url还在  就会一直显示
       this.imageUrl=''
+      // 图形吗刷新
+      this.imgCodeUrl=process.env.VUE_APP_URL + "/captcha?type=sendsms&_t="+Math.random()
     },
     // 注册确认点击事件
     sureBtn() {

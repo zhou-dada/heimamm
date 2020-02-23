@@ -10,11 +10,11 @@
       </div>
       <!--表单验证-->
       <el-form class="demo-ruleForm" :rules="rules" :model="form" label-width="43px" ref="ruleForm">
-        <el-form-item prop="user">
+        <el-form-item prop="phone">
           <el-input
             class="border"
             placeholder="请输入手机号"
-            v-model="form.user"
+            v-model="form.phone"
             prefix-icon="el-icon-search"
           ></el-input>
         </el-form-item>
@@ -75,17 +75,21 @@ export default {
   data() {
     return {
       // 图片地址
-      imgCodeUrl:process.env.VUE_APP_URL+'/captcha?type=login',
+      imgCodeUrl: process.env.VUE_APP_URL + "/captcha?type=login",
       form: {
         agree: false,
-        user: "",
+        phone: "",
         password: "",
-        code: "",
+        code: ""
       },
       rules: {
-        user: [
+        phone: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
-          {pattern:/0?(13|14|15|18|17)[0-9]{9}/,message:'手机号格式不正确',trigger:'blur'}
+          {
+            pattern: /0?(13|14|15|18|17)[0-9]{9}/,
+            message: "手机号格式不正确",
+            trigger: "blur"
+          }
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
@@ -115,22 +119,28 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           login({
-            type: this.form.code,
-            phone:this.form.phone,
-            code:this.form.code
+            phone: this.form.phone,
+            password: this.form.password,
+            code: this.form.code
           })
           .then(res => {
-            console.log(res);
+            window.console.log(res);
+            if(res.data.code==200){
+              this.$message.success('登陆成功')
+              //将token保存到本地
+              window.localStorage.setItem('token',res.data.data.token)
+              // 跳转页面
+              this.$router.push('/login')
+            }
           });
         } else {
-          console.log("error submit!!");
-          return false;
+          window.console.log("error submit!!");
         }
       });
     },
     // 点击刷新验证码
-    changeImgCode(){
-      this. imgCodeUrl=process.env.VUE_APP_URL+'/captcha?type=login&_t='+Date.now();
+    changeImgCode() {
+      this.imgCodeUrl = process.env.VUE_APP_URL + "/captcha?type=login&_t="+Date.now();
     },
     // 注册按钮点击事件
     search() {
