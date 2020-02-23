@@ -38,7 +38,7 @@
               ></el-input>
             </el-col>
             <el-col :span="7">
-              <img class="codeimg" src="./images/code.png" alt />
+              <img class="codeimg" @click="changeImgCode" :src="imgCodeUrl" alt />
             </el-col>
           </el-row>
         </el-form-item>
@@ -67,22 +67,25 @@
 
 <script>
 import regest from "./components/regest";
+import { login } from "@/api/login";
 export default {
   components: {
     regest
   },
   data() {
     return {
+      // 图片地址
+      imgCodeUrl:process.env.VUE_APP_URL+'/captcha?type=login',
       form: {
         agree: false,
         user: "",
         password: "",
-        code: ""
+        code: "",
       },
       rules: {
         user: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          {pattern:/0?(13|14|15|18|17)[0-9]{9}/,message:'手机号格式不正确',trigger:'blur'}
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
@@ -111,19 +114,31 @@ export default {
       // 找到表单对象，调用validate方法
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          alert("submit!");
+          login({
+            type: this.form.code,
+            phone:this.form.phone,
+            code:this.form.code
+          })
+          .then(res => {
+            console.log(res);
+          });
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
+    // 点击刷新验证码
+    changeImgCode(){
+      this. imgCodeUrl=process.env.VUE_APP_URL+'/captcha?type=login&_t='+Date.now();
+    },
+    // 注册按钮点击事件
     search() {
       this.$refs.regestVisible.dialogFormVisible = true;
       // 点击注册时表单数据清空
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.$refs.regestVisible.newForm();
-      })
+      });
     }
   }
 };
