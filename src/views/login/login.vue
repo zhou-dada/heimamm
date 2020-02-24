@@ -68,6 +68,7 @@
 <script>
 import regest from "./components/regest";
 import { login } from "@/api/login";
+import { setToken } from '@/utilis/token.js'
 export default {
   components: {
     regest
@@ -122,25 +123,26 @@ export default {
             phone: this.form.phone,
             password: this.form.password,
             code: this.form.code
-          })
-          .then(res => {
+          }).then(res => {
             window.console.log(res);
-            if(res.data.code==200){
-              this.$message.success('登陆成功')
+            if (res.data.code == 200) {
+              this.$message.success("登陆成功");
               //将token保存到本地
-              window.localStorage.setItem('token',res.data.data.token)
+              // window.localStorage.setItem("token", res.data.data.token);
+              setToken(res.data.data.token)
               // 跳转页面
-              this.$router.push('/login')
+              this.$router.push("/");
+            } else {
+              this.$message.error(res.data.message);
             }
           });
-        } else {
-          window.console.log("error submit!!");
         }
       });
     },
     // 点击刷新验证码
     changeImgCode() {
-      this.imgCodeUrl = process.env.VUE_APP_URL + "/captcha?type=login&_t="+Date.now();
+      this.imgCodeUrl =
+        process.env.VUE_APP_URL + "/captcha?type=login&_t=" + Date.now();
     },
     // 注册按钮点击事件
     search() {
