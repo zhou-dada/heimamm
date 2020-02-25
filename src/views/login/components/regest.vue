@@ -141,11 +141,11 @@ export default {
     getUserCode() {
       // 判断手机号是否出现错误
       // 如果错误就弹出提示框  return阻止后面的代码运行
-      if (!/0?(13|14|15|18|17)[0-9]{9}/.test(this.form.phone)) {
+      if (!(/0?(13|14|15|18|17)[0-9]{9}/.test(this.form.phone))) {
         return this.$message.error("手机号格式不正确");
       }
       // 判断验证码长度是否为4位数
-      if (!/4/.test(this.form.imgCode.length)) {
+      if (!(/4/.test(this.form.imgCode.length))) {
         return this.$message.error("图形吗不正确");
       }
 
@@ -225,9 +225,10 @@ export default {
       // 表单重置
       this.$refs.ruleForm.resetFields();
       // 而img不是表单元素  所以只要img绑定的url还在  就会一直显示
-      this.imageUrl=''
+      this.imageUrl = "";
       // 图形吗刷新
-      this.imgCodeUrl=process.env.VUE_APP_URL + "/captcha?type=sendsms&_t="+Math.random()
+      this.imgCodeUrl =
+        process.env.VUE_APP_URL + "/captcha?type=sendsms&_t=" + Math.random();
     },
     // 注册确认点击事件
     sureBtn() {
@@ -246,9 +247,9 @@ export default {
             if (res.data.code == 200) {
               this.$message.success("恭喜你,注册成功");
               // 重置表单  调用页面刷新
-              this.newForm()
-               //注册成功，关闭对话框
-              this.dialogFormVisible = false
+              this.newForm();
+              //注册成功，关闭对话框
+              this.dialogFormVisible = false;
             } else {
               this.$message.error(res.data.message);
             }

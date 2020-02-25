@@ -124,14 +124,14 @@ export default {
             password: this.form.password,
             code: this.form.code
           }).then(res => {
-            window.console.log(res);
+            // window.console.log(res);
             if (res.data.code == 200) {
               this.$message.success("登陆成功");
               //将token保存到本地
               // window.localStorage.setItem("token", res.data.data.token);
               setToken(res.data.data.token)
               // 跳转页面
-              this.$router.push("/");
+              this.$router.push("/index");
             } else {
               this.$message.error(res.data.message);
             }
