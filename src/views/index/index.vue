@@ -2,22 +2,26 @@
   <el-container class="container">
     <el-header>
       <div class="left">
-        <i @click="isCollapse=!isCollapse"  :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"></i>
+        <i @click="isCollapse=!isCollapse" :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"></i>
         <img src="./images/logo.png" alt />
         <span>黑马面面</span>
       </div>
       <div class="right">
-        <img class="userIcon" :src="avatar" alt />
-        <span class="text">{{username}},你好</span>
+        <img class="userIcon" :src="$store.state.avatar" alt />
+        <span class="text">{{$store.state.username}},你好</span>
         <el-button type="primary" @click="logout" size="mini">退出</el-button>
       </div>
     </el-header>
     <el-container>
-      <el-aside width="auto"> 
+      <el-aside width="auto">
         <!-- auto  自动宽度  内容多宽盒子多宽 
-             default-active: 设置默认选中的菜单 -->
-        <el-menu router default-active="/index/chart" class="el-menu-vertical-demo" 
-        :collapse="isCollapse">
+        default-active: 设置默认选中的菜单-->
+        <el-menu
+          router
+          default-active="/index/chart"
+          class="el-menu-vertical-demo"
+          :collapse="isCollapse"
+        >
           <el-menu-item index="/index/chart">
             <i class="el-icon-pie-chart" @click="iconClick"></i>
             <span slot="title">数据概览</span>
@@ -41,34 +45,41 @@
         </el-menu>
       </el-aside>
 
-
       <el-main>
-          <router-view></router-view>
-
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import { get_user, exitLogin } from "@/api/index.js";
-import { removeToken } from "@/utilis/token.js";
+import {  exitLogin } from "@/api/index.js";
+import { removeToken, getToken } from "@/utilis/token.js";
 export default {
   data() {
     return {
       username: "",
       avatar: "",
-      isCollapse:false
+      isCollapse: false // 是否折叠菜单
     };
   },
-  created() {
-    get_user().then(res => {
-      window.console.log(res);
-      this.username = res.data.data.username;
-      this.avatar = process.env.VUE_APP_URL + "/" + res.data.data.avatar;
-      //因为res.data.data.avatar  获取的头像地址不完整  需要加上基地址  并且要用 '/' 连接起来
-    });
+  beforeCreate() {
+    // 查看token是否为空  判断有没有登录
+    if (getToken() == null) {
+      // 在没有登录的情况下 token为null
+      this.$message.error("请先登录");
+      this.$router.push("/login");
+    }
   },
+  // created() {
+
+  //   get_user().then(res => {
+  //     // window.console.log(res);
+  //     this.username = res.data.data.username;
+  //     this.avatar = process.env.VUE_APP_URL + "/" + res.data.data.avatar;
+  //     //因为res.data.data.avatar  获取的头像地址不完整  需要加上基地址  并且要用 '/' 连接起来
+  //   });
+  // },
 
   methods: {
     // 退出登录点击事件
@@ -87,9 +98,13 @@ export default {
                 message: "删除成功!"
               });
               // 跳转页面
-              this.$router.push("/");
+              this.$router.push("/login");
               // 清楚本地token
               removeToken();
+
+              // 清空vuex
+              this.$store.commit('changeAvatar','')
+              this.$store.commit('changeUsername','')
             }
           });
         })
@@ -102,8 +117,8 @@ export default {
     },
 
     // 列表伸缩展开点击事件
-    iconClick(){
-        this.isCollapse= false
+    iconClick() {
+      this.isCollapse = false;
     }
   }
 };
@@ -167,6 +182,8 @@ export default {
     width: 200px;
     min-height: 400px;
   }
-
+  .el-main {
+    background-color: #0094ff;
+  }
 }
 </style>

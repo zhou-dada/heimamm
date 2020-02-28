@@ -9,10 +9,10 @@ export function getToken(){
 
 // 设置token
 export function  setToken(tokenValue){
-    return  window.localStorage.setItem(TOKENKEY,tokenValue)
+      window.localStorage.setItem(TOKENKEY,tokenValue)
 }
 
 // 删除token
 export function  removeToken(){
-    return  window.localStorage.removeItem(TOKENKEY)
+      window.localStorage.removeItem(TOKENKEY)
 }

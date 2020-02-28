@@ -17,8 +17,9 @@ let indexQ =axios.create({
      /* 因为 */
 })
 
+// axios请求拦截
 indexQ.interceptors.request.use(function (config) {
-    console.log(config);
+    // console.log(config);
     // 在发送请求之前做些什么  config 是被拦截下来的请求的配置
     config.headers.token=getToken()  // 这句话代表每次首页发送请求都会被拦截下来被加上一个token
     return config;
