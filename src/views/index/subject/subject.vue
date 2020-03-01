@@ -14,7 +14,7 @@
           <el-input class="short" v-model="formInline.user"></el-input>
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-select class="normal" v-model="formInline.status" placeholder="活动区域">
+          <el-select class="normal" v-model="formInline.status" placeholder="请选择状态">
             <el-option label="启用" value="1"></el-option>
             <el-option label="禁用" value="0"></el-option>
           </el-select>
