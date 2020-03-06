@@ -9,6 +9,13 @@ import store from '@/store/index.js'
 // 所以就只是简单导入
 import '@/filter/filter.js'
 
+// 导入学科组件
+import subjectSelect from './components/subjectSelect.vue'
+Vue.component('subjectSelect',subjectSelect)
+// 导入企业组件
+import businessSelect from './components/businessSelect.vue'
+Vue.component('businessSelect',businessSelect)
+
 // 导入element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';

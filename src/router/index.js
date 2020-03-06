@@ -28,24 +28,20 @@ import {
   removeToken
 } from '@/utilis/token.js'
 
+// 导入子路由组件
+import childrenRouter from './childrenRouter'
 
 // 准备组件
 import login from '../views/login/login.vue'
 import index from '../views/index/index.vue'
-
-// 子路由
-import user from '../views/index/user/user.vue'
-import chart from '../views/index/chart/chart.vue'
-import question from '../views/index/question/question.vue'
-import business from '../views/index/business/business.vue'
-import subject from '../views/index/subject/subject.vue'
 
 // 这只路由规则
 const routes = [{
     path: '/login',
     component: login,
     meta: {
-      title: '登录'
+      title: '登录',
+      roles: ['超级管理员', '管理员', '老师', '学生']
     }
   },
   {
@@ -56,46 +52,10 @@ const routes = [{
     path: '/index',
     component: index,
     meta: {
-      title: '首页'
+      title: '首页',
+      roles: ['超级管理员', '管理员', '老师', '学生']
     },
-    children: [{
-        // 子路由一般不加/
-        path: 'user',
-        component: user,
-        meta: {
-          title: '用户列表'
-        }
-      },
-      {
-        path: 'question',
-        component: question,
-        meta: {
-          title: '数据概览'
-        }
-      },
-      {
-        path: 'chart',
-        component: chart,
-        meta: {
-          title: '企业列表'
-        }
-      },
-      {
-        path: 'subject',
-        component: subject,
-        meta: {
-          title: '题库列表'
-        }
-      },
-      {
-        path: 'business',
-        component: business,
-        meta: {
-          title: '学科列表'
-        }
-      },
-
-    ]
+    children: childrenRouter
   },
 ]
 
@@ -111,22 +71,46 @@ let whiteUrl = ['/login', '/zhuce', '.guanggao']
 // 导航守卫 在跳转路由之前调用的钩子
 router.beforeEach((to, from, next) => {
   NProgress.start() // 开始滚动条
-
   // 路由白名单，里面存放了一些不需要做权限验证的路径，遇到这些白名单里的路径就直接跳转
   if (whiteUrl.includes(to.path)) {
     next()
   } else {
     // 判断token是否正确
     get_user().then(res => {
-      console.log(res);
       if (res.data.code == 200) {
-        // 这里不是vue 所以不能用this.$store.commit()  所以我们需要导入vuex
-        // 如果token正确的话  将头像地址存入 vuex仓库中
-        store.commit('changeAvatar', process.env.VUE_APP_URL+'/'+ res.data.data.avatar)
-        // 将用户姓名存入到全局vuex仓库中
-        store.commit('changeUsername',res.data.data.username)
+        console.log(res);
+        // 判断是否有权限 
+        if (res.data.data.status == 1) {
+          // 这里不是vue 所以不能用this.$store.commit()  所以我们需要导入vuex
+          // 如果token正确的话  将头像地址存入 vuex仓库中
+          store.commit('changeAvatar', process.env.VUE_APP_URL + '/' + res.data.data.avatar)
+          // 将用户姓名存入到全局vuex仓库中
+          store.commit('changeUsername', res.data.data.username)
+          // 将角色存入到全局vuex仓库中
+          store.commit('changeRole', res.data.data.role)
 
-        next()
+
+          // 从登录跳过来的，才提示登录成功
+          if (from.path == '/login') {
+
+            Message.success('登录成功')
+          }
+          // 判断有没有权限访问某些界面
+          if (to.meta.roles.includes(res.data.data.role)) {
+            next()
+          } else {
+            Message.warning('该页面,您无法访问')
+            // 手动在这里把进度条完成
+            NProgress.done();
+            next(from.path)
+          }
+        } else {
+          Message.error('你的权限已被禁止,请去找管理员')
+          next('/login')
+          // 手动在这里把进度条完成
+          NProgress.done();
+        }
+
       } else {
         // this.$message.error('登录状态有问题，请重新登录')
         Message.error('登录状态有问题，请重新登录！')

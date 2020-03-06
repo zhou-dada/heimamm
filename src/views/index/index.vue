@@ -22,30 +22,24 @@
           class="el-menu-vertical-demo"
           :collapse="isCollapse"
         >
-          <el-menu-item index="/index/chart">
-            <i class="el-icon-pie-chart" @click="iconClick"></i>
-            <span slot="title">数据概览</span>
-          </el-menu-item>
-          <el-menu-item index="/index/user">
-            <i class="el-icon-user" @click="iconClick"></i>
-            <span slot="title">用户列表</span>
-          </el-menu-item>
-          <el-menu-item index="/index/question">
-            <i class="el-icon-edit-outline" @click="iconClick"></i>
-            <span slot="title">题库列表</span>
-          </el-menu-item>
-          <el-menu-item index="/index/business">
-            <i class="el-icon-office-building" @click="iconClick"></i>
-            <span slot="title">企业列表</span>
-          </el-menu-item>
-          <el-menu-item index="/index/subject">
-            <i class="el-icon-notebook-2" @click="iconClick"></i>
-            <span slot="title">学科列表</span>
-          </el-menu-item>
+          <!--v-for和v-if不能写在同一个标签上），在菜单上包了一个template，v-for template就行了-->
+          <template v-for="(item, index) in childrenRouter">
+            <el-menu-item
+              :index="'/index/'+item.path"
+              :key="index"
+              @click="iconClick"
+              v-if="item.meta.roles.includes($store.state.role)"
+            >
+              <i :class="item.meta.icon"></i>
+              <span slot="title">{{item.meta.title}}</span>
+            </el-menu-item>
+          </template>
+          
         </el-menu>
       </el-aside>
 
       <el-main>
+        <!--子路由出口-->
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -53,11 +47,15 @@
 </template>
 
 <script>
-import {  exitLogin } from "@/api/index.js";
+import { exitLogin } from "@/api/index.js";
 import { removeToken, getToken } from "@/utilis/token.js";
+// 导入路由子组件
+import childrenRouter from "@/router/childrenRouter";
 export default {
   data() {
     return {
+      // 事件路由子组件
+      childrenRouter,
       username: "",
       avatar: "",
       isCollapse: false // 是否折叠菜单
@@ -103,8 +101,8 @@ export default {
               removeToken();
 
               // 清空vuex
-              this.$store.commit('changeAvatar','')
-              this.$store.commit('changeUsername','')
+              this.$store.commit("changeAvatar", "");
+              this.$store.commit("changeUsername", "");
             }
           });
         })

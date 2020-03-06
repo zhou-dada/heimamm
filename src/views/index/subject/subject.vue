@@ -144,7 +144,7 @@ export default {
     // 删除按钮点击事件
     delBtn(val) {
       delSubject({ id: val.id }).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.data.code == 200) {
           this.$message.success("删除成功");
 

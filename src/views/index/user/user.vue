@@ -28,7 +28,7 @@
     <!--下面的卡片-->
     <el-card class="box-card">
       <!--表格-->
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData" border style="width: 100%">
         <!-- 设置type =index 即可显示从1开始的索引号-->
         <el-table-column type="index" label="序号" width="50px"></el-table-column>
         <el-table-column prop="username" label="用户名"></el-table-column>
@@ -44,18 +44,19 @@
                 scope.row  拿到这一行的数据
             -->
             <!-- <button @click="dosome(scope.$index,scope.row)">点我啊</button> -->
-            <span v-if="scope.row.status==1">启用</span>
+            <span v-if="scope.row.status==1" >启用</span>
             <span v-else style="color:red">禁用</span>
           </template>
         </el-table-column>
         <el-table-column prop="role_id" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="shoEdit(scope.row)">编辑</el-button>
+            <el-button type="text" v-if="['超级管理员','管理员'].includes($store.state.role)" @click="shoEdit(scope.row)">编辑</el-button>
             <el-button
+            v-if="['超级管理员','管理员'].includes($store.state.role)"
               @click="changeStatus(scope.row.id)"
               type="text"
             >{{scope.row.status==1?'禁用':'启用'}}</el-button>
-            <el-button @click="delUser(scope.row.id)" type="text">删除</el-button>
+            <el-button @click="delUser(scope.row.id)" v-if="['超级管理员','管理员','老师'].includes($store.state.role)" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

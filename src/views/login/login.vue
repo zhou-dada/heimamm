@@ -76,11 +76,11 @@ export default {
   data() {
     return {
       // 图片地址
-      imgCodeUrl: process.env.VUE_APP_URL + "/captcha?type=login",
+      imgCodeUrl: process.env.VUE_APP_URL + "/captcha?type=login&_t="+Date.now(),
       form: {
-        agree: false,
-        phone: "",
-        password: "",
+        agree: true,
+        phone:15225511095,
+        password: '123456',
         code: ""
       },
       rules: {
@@ -126,7 +126,6 @@ export default {
           }).then(res => {
             // window.console.log(res);
             if (res.data.code == 200) {
-              this.$message.success("登陆成功");
               //将token保存到本地
               // window.localStorage.setItem("token", res.data.data.token);
               setToken(res.data.data.token)

@@ -63,6 +63,8 @@ export default {
               this.dialogFormVisible = false; // 新建成功后退出新建装口
               this.$parent.getList()  // 调用父页面里面的获取列表来刷新
               this.$refs.formLabel.resetFields();// 表单重置
+            }else{
+              this.$message.error(res.data.message)
             }
           });
         } else {
